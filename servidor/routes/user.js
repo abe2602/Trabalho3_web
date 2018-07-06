@@ -4,18 +4,19 @@ var User = require('../lib/user');
 
 router.post('/addUser', function(req, res){
      var password = req.body.password;
-     var foto = req.body.photo;
-     var nome = req.body.name;
+     var foto = req.body.foto;
+     var nome = req.body.nome;
      var email = req.body.email;
      var tel = req.body.tel;
      var rua = req.body.rua;
      var bairro = req.body.bairro;
      var numCasa = req.body.numCasa;
      var numCartao = req.body.numCartao;
+     var bandeiraCartao = req.body.bandeiraCartao;
      var isAdmin = req.body.isAdmin;
      var idAdmin = req.body.idAdmin;
 
-     var cadastrarUser = User();
+     var cadastrarUser = new User();
           cadastrarUser.password = password;
           cadastrarUser.foto = foto;
           cadastrarUser.nome = nome;
@@ -25,6 +26,7 @@ router.post('/addUser', function(req, res){
           cadastrarUser.bairro = bairro;
           cadastrarUser.numCasa = numCasa;
           cadastrarUser.numCartao = numCartao;
+          cadastrarUser.bandeiraCartao = bandeiraCartao;
           cadastrarUser.isAdmin = isAdmin;
           cadastrarUser.idAdmin = idAdmin;
 
@@ -34,29 +36,24 @@ router.post('/addUser', function(req, res){
                return res.status(500).send();
           }
           console.log("Deu bom :D");
+          console.log(cadastrarUser);
           return res.status(200).send("ok");
      });
 });
 
 router.get('/getUserData/:email', function(req, res){
      var email = req.params.email;
+     
 
     User.find({email: email} , function(erro, foundUser){
+         
           if(erro){
                console.log("deu pau");
           } 
-          if(!findUser){
+          if(!foundUser){
                console.log("nao achou o user");
           }else{
-               var collections = db.getCollectionNames();
-
-               print('Collections inside the db:');
-               for(var i = 0; i < collections.length; i++){
-                 var name = collections[i];
-
-                 if(name.substr(0, 6) != 'system')
-                   print(name + ' - ' + db[name].count() + ' records');
-               }
+               console.log(foundUser);
                return res.send(foundUser)
           }
     })

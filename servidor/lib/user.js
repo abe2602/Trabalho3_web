@@ -10,6 +10,7 @@ var userSchema = new mongoose.Schema({
      bairro : {type : String},
      numCasa : {type : Number},
      numCartao : {type : Number},
+     bandeiraCartao: {type: String},
      isAdmin : {type : Boolean, default : false},
      idAdmin : {type : Number}
 })

@@ -22,14 +22,12 @@ $(document).ready(function(){
 				xhr.onreadystatechange = function(){
 					if(this.readyState == XMLHttpRequest.DONE && this.status == 200) {
 						var text = xhr.responseText;
-						// console.log(text);
 						if(text==="erro"){
 							alert("Usuario e senha inválidas");
 						}else{
 							var inf = JSON.parse(text);
 							$(".main").load("accountScreen.html");
 						}
-						console.log(text);
 					}
 				};
 				data = JSON.stringify({email: email,password: password});

@@ -60,12 +60,12 @@ $(document).ready(function(){
                 bairro: bairro,
                 numCasa: numCasa,
                 numCartao: 0,
+                bandeiraCartao: "",
                 isAdmin: false,
                 idAdmin: 0
             });
             console.log(data);
             xhr.send(data);
-
         }
     });
 });

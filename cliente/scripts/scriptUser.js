@@ -54,11 +54,13 @@ $(document).ready(function(){
 		}
 	});
 
-	if(loginAux != null){
-		var xhr = new XMLHttpRequest();
-		xhr.open("GET", "http://localhost:3000/user/getUserData" + loginAux, true);
+	if(loginAux.length != 0){
 
-		xhr.load = function (){
+		var xhr = new XMLHttpRequest();
+		xhr.open("GET", "http://localhost:3000/user/getUserData/" + loginAux, true);
+		xhr.setRequestHeader("Content-Type", "application/json");
+
+		xhr.onload = function (){
 			var text = xhr.responseText;
 			console.log(JSON.parse(text).length);
 			console.log(text);
@@ -68,15 +70,20 @@ $(document).ready(function(){
 			}else{
 				text = text.split("}")
 				text.pop();
-
+				console.log(text)
 				list = []
 				for (var i = 0; i < text.length; i++) {
 					text[i] = text[i].substr(1) + "}";
 					list.push(JSON.parse(text[i]));
 				}
-
-				$("#nomeUse").val(list[0].name);
+				$("#nomeUser").val(list[0].nome);
 				$("#emailUser").val(list[0].email);
+				$("#telUser").val(list[0].tel);
+				$("#streetUser").val(list[0].rua);
+				$("#numCasaUser").val(list[0].numCasa);
+				$("#bairroUser").val(list[0].bairro);
+				$("#numCard").val(list[0].numCartao);
+				$("#flagCard").val(list[0].bandeiraCartao);
 			}
 		};
 		xhr.send(null);
