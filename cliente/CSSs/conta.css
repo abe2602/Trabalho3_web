@@ -1,0 +1,48 @@
+/*Borda da foto do usuário*/
+#borderFoto1 {
+  border: 5px solid rgb(152, 197, 73);;
+  border-radius: 5px;
+  margin-bottom: 40px;
+}
+
+#borderFoto2 {
+  border: 5px solid rgb(152, 197, 73);;
+  border-radius: 5px;
+  margin-bottom: 40px;
+}
+/*Borda da foto do usuário*/
+
+/*Borda divisoria entre dados e foto*/
+#borderContent {
+  border-left: 3.5px solid rgb(152, 197, 73);
+  border-radius: 5px;
+  width: 65%;
+  height: auto;
+  padding-left: 8px;
+  display: block;
+  display: inline-block;
+}
+/*Borda divisoria entre dados e foto*/
+
+/*Estilos para botões da página da conta do usuário*/
+.inputfile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.accountButton{
+  background-color: rgb(56, 137, 76);
+  color: white;
+  display: inline-block;
+  text-align: center;
+  border-radius: 5px;
+  font-size: 16px;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+/*Estilos para botões da página da conta do usuário*/

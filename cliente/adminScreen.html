@@ -1,0 +1,40 @@
+<script src = "scripts/scriptAdmin.js"></script>
+
+<div class="container">
+	<div class="pg row clearfix">
+		<div class="col-sm-6 text-center">
+			<img id = "borderFoto1" src="Imagens\unknown.jpg" width="200" height="200" alt="foto de perfil">
+			<input type="file" name="file" id="file2" class="inputfile">
+			<br><label class="accountButton" for="file2">Alterar foto</label>
+
+
+			<br><button type="button" class="accountButton" id = "addUser">Adicionar Usuário/Adm</button>
+
+			<br>	<button type="button" class="accountButton" id = "addProduct">Adicionar Produto</button>
+				<button type="button" class="accountButton" id = "Estoque">Produtos em Estoque</button>
+
+			<br>	<button type="button" class="accountButton" id = "addService">Adicionar Serviço</button>
+				<button type="button" class="accountButton" id = "Service">Serviços Disponiveis</button>
+
+			<br><button type="button" class="accountButton" id = "gerService">Gerenciar Serviços Agendados</button>
+		</div>
+		<div class="col-sm-6">
+			<div id = "borderContent">
+				<h1 style="color: rgb(152, 197, 73);">Meus Dados</h1>
+				<p>Nome:</p><input type="text" name="name" class = "nomeUser">
+				<p>Email:</p><input type="text" name="email" class = "emailUser" readonly>
+				<p >Telefone:</p><input type="number" name="tel" class = "telUser">
+
+				<h1 style="color: rgb(152, 197, 73);">Endereço</h1>
+				<p>Rua:</p><input type="text" name="street" class = "streetUser">
+				<p>Número:</p><input type="number" name="num" class = "numCasaUser">
+				<p>Bairro:</p><input type="text" name="bairro" class = "bairroUser">
+
+				<div style="margin-top: 20px;">
+					<button class="accountButton" id = "btOut" >Sair</button>
+					<button class="accountButton" id = "btSave">Salvar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

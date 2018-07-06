@@ -1,0 +1,36 @@
+<script src = "scripts/scriptUser.js"></script>
+
+<div class="container">
+  <div class="pg row clearfix">
+    <div class="col-sm-6 text-center">
+      <img id = "borderFoto1"  width="200" height="200" alt="foto de perfil">
+      <input type="file" name="file" id="file" class="inputfile" />
+      <br><label class="accountButton" for="file">Alterar foto</label>
+
+      <br><button type="button" class="accountButton" id = "addAnimal">Adicionar Animal</button>
+      <br><button type="button" class="accountButton" id = "listAnimal">Listar Animais</button>
+    </div>
+    <div class="col-sm-6">
+      <div id = "borderContent">
+       <h1 style="color: rgb(152, 197, 73);">Meus Dados</h1>
+       <p>Nome:</p><input type="text" name="name" id = "nomeUser">
+       <p>Email:</p><input type="email" name="email" id = "emailUser" readonly>
+       <p >Telefone:</p><input type="tel" name="tel" id = "telUser">
+
+       <h1 style="color: rgb(152, 197, 73);">Endereço</h1>
+       <p>Rua:</p><input type="text" name="street" id = "streetUser">
+       <p>Número:</p><input type="number" name="num" id = "numCasaUser">
+       <p>Bairro:</p><input type="text" name="bairro" id = "bairroUser">
+
+       <h1 style="color: rgb(152, 197, 73);">Cartão</h1>
+       <p>Número:</p><input type="number" name="cartao" id = "numCard">
+       <p>Bandeira:</p><input type="text" name="tipo" id = "flagCard">
+
+       <div style="margin-top: 20px;">
+        <button class="accountButton" id = "btOut" >Sair</button>
+        <button class="accountButton" id = "btSave">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
