@@ -38,4 +38,29 @@ router.post('/addUser', function(req, res){
      });
 });
 
+router.get('/getUserData/:email', function(req, res){
+     var email = req.params.email;
+
+    User.find({email: email} , function(erro, foundUser){
+          if(erro){
+               console.log("deu pau");
+          } 
+          if(!findUser){
+               console.log("nao achou o user");
+          }else{
+               var collections = db.getCollectionNames();
+
+               print('Collections inside the db:');
+               for(var i = 0; i < collections.length; i++){
+                 var name = collections[i];
+
+                 if(name.substr(0, 6) != 'system')
+                   print(name + ' - ' + db[name].count() + ' records');
+               }
+               return res.send(foundUser)
+          }
+    })
+});
+
+
 module.exports = router;

@@ -6,55 +6,38 @@ $(document).ready(function(){
 
 	$("#btEntrar").click(function(){
 		var email = $("#emailLogin").val();
-		var senha = $("#passwordLogin").val();
+		var password = $("#passwordLogin").val();
 
-		if(email == null  || senha == null){
+		if(email.length == 0 || password.length == 0){
 			alert("Algum dos campos está vazio!");
 		}else{
-			var db = indexedDB.open("db", 1);
+			try{
+				loginAux = email;
 
-			db.onsuccess = function(event){
-				db = event.target.result;
+				var xhr = new XMLHttpRequest();
+				xhr.open("POST", "http://localhost:3000/utils/login", true);
 
-				var transaction = db.transaction(["usuarios"], "readonly");
-				var store = transaction.objectStore("usuarios");
+				xhr.setRequestHeader("Content-Type", "application/json");
 
-				var request = store.get(email);
-
-				request.onsuccess = function(e){
-					var result = e.target.result;
-					if(result == undefined){
-						alert("Usuário inexistente, cadastre-se!");
-					}
-
-					if(result.email == email && result.senha == senha && result.tipoUser == "normal"){
-						//AQUIIIIIIIIIIIIIIIIIIIIIIIIIII
-						$(".fa-shopping-cart").remove();
-						$("#side").prepend(
-							'<li class="nav-item nav-link fas fa-shopping-cart" style="font-size:18px;" id="cart">Carrinho</li>'
-						)
-
-						$("#loginScreen").text("Conta");
-						loginAux = email;
-						$("#loginScreen").click(function(){
+				xhr.onreadystatechange = function(){
+					if(this.readyState == XMLHttpRequest.DONE && this.status == 200) {
+						var text = xhr.responseText;
+						// console.log(text);
+						if(text==="erro"){
+							alert("Usuario e senha inválidas");
+						}else{
+							var inf = JSON.parse(text);
 							$(".main").load("accountScreen.html");
-						});
-
-						$(".main").load("accountScreen.html");
-					}else if(result.email == email && result.senha == senha && result.tipoUser == "admin"){
-						$("#loginScreen").text("Conta");
-						loginAux = email;
-						$("#loginScreen").click(function(){
-							$(".main").load("adminScreen.html");
-						});
-
-						$(".main").load("adminScreen.html");
-					}else{
-						console.log("Senha e usuário não conferem, tente novamente");
-						alert("Senha e usuário não conferem, tente novamente");
+						}
+						console.log(text);
 					}
-				}
-				db.close();
+				};
+				data = JSON.stringify({email: email,password: password});
+				console.log(data);
+				xhr.send(data);
+
+			}catch(err){
+				console.log(err.message);
 			}
 		}
 	});

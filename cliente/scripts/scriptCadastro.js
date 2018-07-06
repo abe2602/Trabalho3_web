@@ -35,15 +35,15 @@ $(document).ready(function(){
             xhr.onreadystatechange = function(){
                 console.log(XMLHttpRequest.DONE)
                 console.log(this.readyState)
-                console.log(this.status)
+
                 if(this.readyState == XMLHttpRequest.DONE && this.status == 200) {
                     var text = xhr.responseText;
                     if(text==="ok"){
-                        console.log("deu bom")
+                        console.log("deu bom");
                         alert("Cadastro efetuado com sucesso");
-                        $(".main").load("accountScreen.html");
+                        $(".main").load("loginScreen.html");
                     }else{
-                        console.log("deu ruim")
+                        console.log("deu ruim");
                         alert("Erro ao cadastrar");
                     }
                     console.log(text);

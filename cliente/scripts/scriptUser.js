@@ -55,35 +55,31 @@ $(document).ready(function(){
 	});
 
 	if(loginAux != null){
-		var db = indexedDB.open("db", 1);
+		var xhr = new XMLHttpRequest();
+		xhr.open("GET", "http://localhost:3000/user/getUserData" + loginAux, true);
 
-		db.onsuccess = function(event){
-			db = event.target.result;
+		xhr.load = function (){
+			var text = xhr.responseText;
+			console.log(JSON.parse(text).length);
+			console.log(text);
 
-			var transaction = db.transaction(["usuarios"], "readwrite");
-			var store = transaction.objectStore("usuarios");
+			if(text==="erro"){
+				alert("Erro para achar o servico");
+			}else{
+				text = text.split("}")
+				text.pop();
 
-			var request = store.get(loginAux);
+				list = []
+				for (var i = 0; i < text.length; i++) {
+					text[i] = text[i].substr(1) + "}";
+					list.push(JSON.parse(text[i]));
+				}
 
-			request.onsuccess = function(e){
-				var result = e.target.result;
-
-				$("#nomeUser").val(result.nome);
-				$("#emailUser").val(result.email);
-				$("#telUser").val(parseInt(result.telefone));
-				$("#streetUser").val(result.rua);
-				$("#numCasaUser").val(parseInt(result.numCasa));
-				$("#bairroUser").val(result.bairro);
-				$("#borderFoto1").attr("src", result.foto);
-
-				if(result.bandeiraCartao != null)
-					$("#flagCard").val(result.bandeiraCartao);
-
-				if(result.numCartao != null)
-					$("#numCard").val(result.numCartao);
+				$("#nomeUse").val(list[0].name);
+				$("#emailUser").val(list[0].email);
 			}
-			db.close();
 		};
+		xhr.send(null);
 	}
 });
 
