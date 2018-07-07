@@ -11,10 +11,10 @@ $(document).ready(function(){
 	$("#btOut").click(function(){
 		//AQUIII
 		$(".fa-shopping-cart").remove();
+		$(".main").load("initialScreen.html");
+
 		$("#loginScreen").text("Entrar");
 		loginAux = null;
-
-		$(".main").load("initialScreen.html");
 
 		$("#loginScreen").click(function(){
 			$(".main").load("loginScreen.html");
@@ -22,34 +22,46 @@ $(document).ready(function(){
 	});
 
 	$("#btSave").click(function(){
+		nome = $("#nomeUser").val();
+		tel = $("#telUser").val();
+		rua = $("#streetUser").val();
+		numCasa = $("#numCasaUser").val();
+		bairro = $("#bairroUser").val();
+		numCartao = $("#numCard").val();
+		bandeiraCartao = $("#flagCard").val();
+		foto = $("#borderFoto1").attr("src");
 
-		var name, email, tel, street, numCasa, bairro;
-		var db = indexedDB.open("db", 1);
+		var xhr = new XMLHttpRequest();
+		xhr.open("PUT", "http://localhost:3000/user/updateUser/" + loginAux, true);
+		xhr.setRequestHeader("Content-Type", "application/json");
 
-		db.onsuccess = function (event) {
-			db = event.target.result;
+		data = JSON.stringify({
+			password : " ",
+			foto : foto,
+			nome : nome,
+			email : loginAux,
+			tel : tel,
+			rua: rua,
+			bairro: bairro,
+			numCasa: numCasa,
+			numCartao: numCartao,
+			bandeiraCartao: bandeiraCartao,
+			isAdmin: false,
+			idAdmin: 0
+		});
 
-			var transaction = db.transaction(["usuarios"], "readwrite");
-			var store = transaction.objectStore("usuarios");
+		console.log(data);
+		xhr.send(data);
 
-			if(loginAux != null) {
-				var request = store.get(loginAux);
+		xhr.onreadystatechange = function (){
+			var text = xhr.responseText;
 
-				request.onsuccess = function (e) {
-					var result = e.target.result;
-
-					result.nome = $("#nomeUser").val();
-					result.telefone = $("#telUser").val();
-					result.rua = $("#streetUser").val();
-					result.numCasa = $("#numCasaUser").val();
-					result.bairro = $("#bairroUser").val();
-					result.numCartao = $("#numCard").val();
-					result.bandeiraCartao = $("#flagCard").val();
-					result.foto = $("#borderFoto1").attr("src");
-
-					store.put(result);
+			if(this.readyState == xhr.DONE){
+				if(text==="ok"){
+					alert("Atualização concluida");
+				}else{
+					alert("Erro na alteração");
 				}
-				db.close();
 			}
 		}
 	});
@@ -84,6 +96,7 @@ $(document).ready(function(){
 				$("#bairroUser").val(list[0].bairro);
 				$("#numCard").val(list[0].numCartao);
 				$("#flagCard").val(list[0].bandeiraCartao);
+				$("#borderFoto1").attr("src", list[0].foto);
 			}
 		};
 		xhr.send(null);

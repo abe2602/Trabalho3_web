@@ -38,13 +38,9 @@ function servicosReservados(){
 }
 
 $(document).ready(function(){
-	$(".nameAnimal").attr('disabled',true);
-	$(".racaAnimal").attr('disabled',true);
-	$(".racaPai").attr('disabled',true);
-	$(".racaMae").attr('disabled',true);
-	$(".dono").attr('disabled',true);
 	document.getElementById("servicosAnimal").innerHTML = "";
-	servicosReservados();
+	//servicosReservados();
+
 	/*Encontra os animais do dono*/
 	var db = indexedDB.open("db", 1);
 	let dogNome = [];
@@ -56,94 +52,118 @@ $(document).ready(function(){
 	let dogRacaPai = [];
 	let dogFoto = [];
 	let dogKey = [];
-	var i = 0;
+	let i = 0;
 
+	//Faz a requisição HTTP para o node.js
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", "http://localhost:3000/animal/listAnimal/" + loginAux, true);
+	xhr.setRequestHeader("Content-Type", "application/json");
 
-	db.onsuccess = function(event){
+	//Espera a resposta do node.js
+	xhr.onload = function (){
+		var text = xhr.responseText;
+		var sizeArrayDogs = JSON.parse(text).length;
+		console.log(JSON.parse(text).length);
+		console.log(text);
 
-		db = event.target.result;
-
-		var objectStore = db.transaction("animais").objectStore("animais");
-
-		objectStore.openCursor().onsuccess = event => {
-			let cursor = event.target.result;
-			if (cursor) {
-				if(loginAux == cursor.value.dono){
-					dogNome.push(cursor.value.nome);
-					dogIdade.push(cursor.value.idade);
-					dogPeso.push(cursor.value.peso);
-					dogDono.push(cursor.value.dono);
-					dogRaca.push(cursor.value.raca);
-					dogRacaMae.push(cursor.value.racaMae);
-					dogRacaPai.push(cursor.value.racaPai);
-					dogFoto.push(cursor.value.foto);
-					dogKey.push(cursor.key);
-					cursor.continue();
-				}
+		//Trata a resposta
+		if(text==="erro"){
+			alert("Erro para achar o servico");
+		}else{
+			text = text.split("}")
+			text.pop();
+			console.log(text)
+			var list = [];
+			for (var k = 0; k < text.length; k++) {
+				text[k] = text[k].substr(1) + "}";
+				list.push(JSON.parse(text[k]));
 			}
-			else {
-				$(".nameAnimal").val(dogNome[i]);
-				$(".idadeAnimal").val(dogIdade[i]);
-				$(".pesoAnimal").val(dogPeso[i]);
-				$(".nomeDono").val(dogDono[i]);
-				$(".racaAnimal").val(dogRaca[i]);
-				$(".racaPai").val(dogRacaPai[i]);
-				$(".racaMae").val(dogRacaMae[i]);
-				$("#borderFoto2").attr("src", dogFoto[i]);
+
+			//Coloca a resposta nos vetores utilizados
+			for(var j = 0; j < sizeArrayDogs; j++){
+				dogFoto.push(list[j].foto);
+				dogDono.push(list[j].dono);
+				dogNome.push(list[j].nome);
+				dogIdade.push(list[j].idade);
+				dogPeso.push(list[j].peso);
+				dogRaca.push(list[j].raca);
+				dogRacaMae.push(list[j].racaMae);
+				dogRacaPai.push(list[j].racaPai);
+				dogKey.push(list[j]._id);
 			}
-			db.close();
 
-		};
-	}
+			//Coloca o texto nas textBox
+			$(".nameAnimal").val(dogNome[i]);
+			$(".idadeAnimal").val(dogIdade[i]);
+			$(".pesoAnimal").val(dogPeso[i]);
+			$(".nomeDono").val(dogDono[i]);
+			$(".racaAnimal").val(dogRaca[i]);
+			$(".racaPai").val(dogRacaPai[i]);
+			$(".racaMae").val(dogRacaMae[i]);
+		}
+	};
 
+	xhr.send(null);
 
-
-
+	/*Funções dos botões*/
+	//delete
 	$("#deleteButtonList").click(function(){
 		if(i < 0){
 			alert("Não há o que deletar!");
 		}else if(dogDono[i] != undefined){
-			var db = indexedDB.open("db", 1);
+			//Faz a requisição HTTP para o node.js
+			var xhr = new XMLHttpRequest();
+			xhr.open("DELETE", "http://localhost:3000/animal/deleteAnimal/" + dogKey[i], true);
+			xhr.setRequestHeader("Content-Type", "application/json");
 
-			db.onsuccess = function(event){
-				db = event.target.result;
-
-				var transaction = db.transaction(["animais"], "readwrite");
-				var store = transaction.objectStore("animais");
-
-				var request = store.delete(dogKey[i]);
-
-				request.onsuccess = function (e) {
-					alert("Exluido com sucesso");
+			xhr.onreadystatechange = function (){
+				if(this.readyState == xhr.DONE){
+					console.log("Excluido com sucesso");
+					alert("Excluido com sucesso");
 					$(".main").load("accountScreen.html");
 				}
-			};
+			}
+
+			xhr.send(null);
 		}
 	});
-
+	//atualizar
 	$("#saveButtonList").click(function(){
 		console.log(dogKey[i]);
-		var db = indexedDB.open("db", 1);
 
-		db.onsuccess = function (event) {
-			db = event.target.result;
+		var xhr = new XMLHttpRequest();
+		xhr.open("PUT", "http://localhost:3000/animal/updateAnimal/" + dogKey[i], true);
+		xhr.setRequestHeader("Content-Type", "application/json");
 
-			var store = db.transaction("animais", "readwrite").objectStore("animais");
-			var request = store.get(dogKey[i]);
+		var data = JSON.stringify({
+			dono : loginAux,
+			nome : $(".nameAnimal").val(),
+			idade : $(".idadeAnimal").val(),
+			peso : $(".pesoAnimal").val(),
+			raca : $(".racaAnimal").val(),
+			racaPai : $(".racaPai").val(),
+			racaMae : $(".racaMae").val(),
+			foto : $("#borderFoto2").attr("src")
+		});
 
-			request.onsuccess = function (e) {
-				var result = e.target.result;
+		console.log(data);
+		xhr.send(data);
 
-				result.idade = $(".idadeAnimal").val();
-				result.peso = $(".pesoAnimal").val();
+		xhr.onreadystatechange = function (){
+			var text = xhr.responseText;
 
-				result.foto = $("#borderFoto2").attr("src");
-				store.put(result, dogKey[i]);
+			if(this.readyState == xhr.DONE){
+				if(text==="ok"){
+					alert("Atualização concluida");
+					$(".main").load("accountScreen.html");
+				}else{
+					alert("Erro na alteração");
+				}
 			}
-			db.close();
 		}
-	});
 
+	});
+	//voltar
 	$("#previousButtonList").click(function(){
 		console.log("previous");
 
@@ -160,11 +180,11 @@ $(document).ready(function(){
 				$(".racaMae").val(dogRacaMae[i]);
 				$("#borderFoto2").attr("src", dogFoto[i]);
 				document.getElementById("servicosAnimal").innerHTML = "";
-				servicosReservados();
+				//servicosReservados();
 			}
 		}
 	});
-
+	//próximo
 	$("#nextButtonList").click(function(){
 		console.log(dogIdade.length);
 
@@ -181,7 +201,7 @@ $(document).ready(function(){
 				$(".racaMae").val(dogRacaMae[i]);
 				$("#borderFoto2").attr("src", dogFoto[i]);
 				document.getElementById("servicosAnimal").innerHTML = "";
-				servicosReservados();
+				//servicosReservados();
 			}
 		}
 	});

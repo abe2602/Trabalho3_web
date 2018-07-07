@@ -37,7 +37,7 @@ $(document).ready(function(){
                     raca : raca,
                     racaPai : racaPai,
                     racaMae : racaMae,
-                    foto : " "
+                    foto : foto
                 });
                 console.log(data);
                 xhr.send(data);

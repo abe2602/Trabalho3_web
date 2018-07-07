@@ -57,5 +57,31 @@ router.get('/getUserData/:email', function(req, res){
      })
 });
 
+router.put('/updateUser/:email', function(req, res){
+     var email = req.params.email;
+     
+     User.findOne({email: email} , function(erro, user){
+          if(erro){
+               console.log("Algum erro aconteceu");
+          }else{
+               user.foto = req.body.foto;
+               user.nome = req.body.nome;
+               user.tel = req.body.tel;
+               user.rua = req.body.rua;
+               user.bairro = req.body.bairro;
+               user.numCasa = req.body.numCasa;
+               user.numCartao = req.body.numCartao;
+               user.bandeiraCartao = req.body.bandeiraCartao;
+               
+               user.save(function(erro, newAnimal){
+                    if(erro){
+                      res.status(404).send(erro);
+                    }else{
+                      res.send("ok");
+                    }
+               });
+          }
+     })
+});
 
 module.exports = router;

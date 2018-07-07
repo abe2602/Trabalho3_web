@@ -12,8 +12,6 @@ $(document).ready(function(){
 			alert("Algum dos campos está vazio!");
 		}else{
 			try{
-				loginAux = email;
-
 				var xhr = new XMLHttpRequest();
 				xhr.open("POST", "http://localhost:3000/utils/login", true);
 
@@ -26,6 +24,12 @@ $(document).ready(function(){
 							alert("Usuario e senha inválidas");
 						}else{
 							var inf = JSON.parse(text);
+							loginAux = email;
+
+							$("#loginScreen").text("Conta");
+							$("#loginScreen").click(function(){
+								$(".main").load("accountScreen.html");
+							});
 							$(".main").load("accountScreen.html");
 						}
 					}

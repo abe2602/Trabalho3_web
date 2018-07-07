@@ -52,14 +52,14 @@ $(document).ready(function(){
 
             data = JSON.stringify({
                 password : senha,
-                foto : "",
+                foto : foto,
                 nome : name,
                 email : email,
                 tel : telefone,
                 rua: rua,
                 bairro: bairro,
                 numCasa: numCasa,
-                numCartao: 0,
+                numCartao: "",
                 bandeiraCartao: "",
                 isAdmin: false,
                 idAdmin: 0
