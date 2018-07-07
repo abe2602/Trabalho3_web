@@ -1,6 +1,6 @@
 $(document).ready(function(){
     $("#submitAnimalButton").click(function(){
-        var name = $("#nomeAnimal").val();
+        var nome = $("#nomeAnimal").val();
         var idade = $("#idadeAnimal").val();
         var peso = $("#pesoAnimal").val();
         var raca = $("#racaAnimal").val();
@@ -8,40 +8,41 @@ $(document).ready(function(){
         var racaMae = $("#racaMae").val();
         var foto = "Imagens\\unknown.jpg";
 
-        if(name.length == 0 || idade.length == 0 || peso.length == 0 || raca.length == 0 || racaPai.length == 0 || racaMae.length == 0){
+        if(nome.length == 0 || idade.length == 0 || peso.length == 0 || raca.length == 0 || racaPai.length == 0 || racaMae.length == 0){
             alert("Preencha todos os campos, por favor!");
         }else{
-            var db = indexedDB.open("db", 1);
+            try{
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "http://localhost:3000/animal/addAnimal", true);
+                xhr.setRequestHeader("Content-Type", "application/json");
 
-            db.onsuccess = function(event){
-                db = event.target.result;
-
-                var transaction = db.transaction(["animais"], "readwrite");
-
-                var store = transaction.objectStore("animais");
-                var animal = {
-                    dono: loginAux,
-                    nome: name,
-                    idade: idade,
-                    peso: peso,
-                    raca: raca,
-                    racaMae: racaMae,
-                    racaPai: racaPai,
-                    foto: foto
+                xhr.onreadystatechange = function(){
+                    if(this.readyState == XMLHttpRequest.DONE && this.status == 200) {
+                        var text = xhr.responseText;
+                        if(text==="ok"){
+                            console.log("Animal Adicionado com sucesso");
+                            alert("Cadastro efetuado com sucesso");
+                            $(".main").load("accountScreen.html");
+                        }else{
+                            console.log("deu ruim");
+                            alert("Erro ao cadastrar");
+                        }
+                    }
                 };
-
-                var request = store.add(animal);
-
-                request.onsuccess = function(w){
-                    console.log("Animal cadastrado com sucesso");
-                    $(".main").load("accountScreen.html");
-                }
-
-                request.onerror = function(e){
-                    console.log(e);
-                    console.log("bah, morreu");
-                }
-                db.close();
+                var data = JSON.stringify({
+                    dono : loginAux,
+                    nome : nome,
+                    idade : idade,
+                    peso : peso,
+                    raca : raca,
+                    racaPai : racaPai,
+                    racaMae : racaMae,
+                    foto : " "
+                });
+                console.log(data);
+                xhr.send(data);
+            }catch(err){
+                console.log(err.message);
             }
         }
     });

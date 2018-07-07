@@ -96,6 +96,9 @@ $(document).ready(function(){
 		};
 	}
 
+
+
+
 	$("#deleteButtonList").click(function(){
 		if(i < 0){
 			alert("Não há o que deletar!");

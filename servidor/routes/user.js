@@ -29,13 +29,13 @@ router.post('/addUser', function(req, res){
           cadastrarUser.bandeiraCartao = bandeiraCartao;
           cadastrarUser.isAdmin = isAdmin;
           cadastrarUser.idAdmin = idAdmin;
-
+     
      cadastrarUser.save(function(erro, save){
           if(erro){
                console.log(erro);
                return res.status(500).send();
           }
-          console.log("Deu bom :D");
+          console.log("Usuário cadastrado com sucesso");
           console.log(cadastrarUser);
           return res.status(200).send("ok");
      });
@@ -44,19 +44,17 @@ router.post('/addUser', function(req, res){
 router.get('/getUserData/:email', function(req, res){
      var email = req.params.email;
      
-
-    User.find({email: email} , function(erro, foundUser){
-         
+     User.find({email: email} , function(erro, foundUser){
           if(erro){
-               console.log("deu pau");
+               console.log("Algum erro aconteceu");
           } 
           if(!foundUser){
-               console.log("nao achou o user");
+               console.log("Usuario nao identificado");
           }else{
                console.log(foundUser);
                return res.send(foundUser)
           }
-    })
+     })
 });
 
 
