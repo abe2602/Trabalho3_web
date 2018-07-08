@@ -3,39 +3,44 @@ $(document).ready(function(){
         var name = $("#inputNameService").val();
         var data = $("#inputDateService").val();
         var imagem = $("#inputImageService").val();
-	var value = $.trim(imagem);
-	if(value.length == 0)
-	{
-		imagem = "Imagens/semFoto.jpeg";
-	}
+	    var value = $.trim(imagem);
         var preco = $("#inputPrecoService").val();
+
+        if(value.length == 0) {
+            imagem = "Imagens/semFoto.jpeg";
+        }
 
         if(name == null || preco == null || data == null){
             alert("Preencha todos os campos!");
         }else{
-            var db = indexedDB.open("db", 1);
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:3000/service/addService", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
 
-            db.onsuccess = function(event){
-                db = event.target.result;
+            data = JSON.stringify({
+                nome: name,
+                preco: preco,
+                imagem: imagem,
+                data: data
+            });
+            console.log(data);
+            xhr.send(data);
 
-                var transaction = db.transaction(["service"], "readwrite");
-
-                var store = transaction.objectStore("service");
-                var service = {
-                    nome: name,
-                    imagem:imagem,
-                    data: data,
-                    preco:preco
-                };
-
-                var request = store.add(service);
-
-                request.onsuccess = function(w){
-                    console.log("cadastrado com sucesso");
-                    $(".main").load("adminScreen.html");
+            xhr.onreadystatechange = function(){
+                if(this.readyState == XMLHttpRequest.DONE && this.status == 200) {
+                    var text = xhr.responseText;
+                    if(text==="ok"){
+                        console.log("deu bom");
+                        alert("Produto cadastrado com sucesso");
+                        $(".main").load("adminScreen.html");
+                    }else{
+                        console.log("deu ruim");
+                        alert("Erro ao cadastrar");
+                    }
+                    console.log(text);
                 }
-                db.close();
-            }
+            };
+
         }
     });
 });

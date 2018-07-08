@@ -6,29 +6,46 @@ $(document).ready(function(){
     var arrayPreco = [];
     var i = 0;
 
-    db.onsuccess = function(event) {
-        db = event.target.result;
+    //Faz a requisição HTTP para o node.js
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "http://localhost:3000/service/listService/", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
 
-        var objectStore = db.transaction("service").objectStore("service");
+    //Espera a resposta do node.js
+    xhr.onload = function (){
+        var text = xhr.responseText;
+        var sizeArrayProduct = JSON.parse(text).length;
+        console.log(JSON.parse(text).length);
+        console.log(text);
 
-        objectStore.openCursor().onsuccess = event => {
-            let cursor = event.target.result;
-            if (cursor) {
-                arrayImagem.push(cursor.value.imagem);
-                arrayNome.push(cursor.value.nome);
-                arrayPreco.push(cursor.value.preco);
-                cursor.continue();
+        //Trata a resposta
+        if(text==="erro"){
+            alert("Erro para achar o servico");
+        }else{
+            text = text.split("}");
+            text.pop();
+            console.log(text);
+            var list = [];
+
+            for (var k = 0; k < text.length; k++) {
+                text[k] = text[k].substr(1) + "}";
+                list.push(JSON.parse(text[k]));
             }
-            else {
-                $("#caminho").val(arrayImagem[i]);
-                $(".nameService").val(arrayNome[i]);
-                $(".precoService").val(arrayPreco[i]);
 
-                console.log(arrayNome[i]);
+            //Coloca a resposta nos vetores utilizados
+            for(var j = 0; j < sizeArrayProduct; j++){
+                arrayImagem.push(list[j].imagem);
+                arrayNome.push(list[j].nome);
+                arrayPreco.push(list[j].preco);
             }
-            db.close();
+            //Coloca o texto nas textBox
+            $("#caminho").val(arrayImagem[i]);
+            $(".nameService").val(arrayNome[i]);
+            $(".precoService").val(arrayPreco[i]);
         }
-    }
+    };
+
+    xhr.send(null);
 
     $("#nextButtonService").click(function(){
         console.log(i+" "+arrayNome[i].length);
@@ -79,24 +96,33 @@ $(document).ready(function(){
     });
 
     $("#saveButtonService").click(function(){
-        var db = indexedDB.open("db", 1);
+        console.log(arrayNome[i]);
 
-        db.onsuccess = function (event) {
-            db = event.target.result;
+        var xhr = new XMLHttpRequest();
+        xhr.open("PUT", "http://localhost:3000/service/updateService/" + arrayNome[i], true);
+        xhr.setRequestHeader("Content-Type", "application/json");
 
-            var store = db.transaction(["service"], "readwrite").objectStore("service");
-            var request = store.get(arrayNome[i]);
+        var data = JSON.stringify({
+            nome: $(".nameService").val(),
+            preco: $(".precoService").val(),
+            imagem:  $("#caminho").val(),
+            data: " "
+        });
 
-            request.onsuccess = function (e) {
-                var result = e.target.result;
-                result.imagem = $("#caminho").val();
-                result.nome =  $(".nameProduct").val();
-                result.preco = $(".precoProduct").val();
+        console.log(data);
+        xhr.send(data);
 
-                store.put(result);
-		          alert("Service Salvo!");
+        xhr.onreadystatechange = function (){
+            var text = xhr.responseText;
+
+            if(this.readyState == xhr.DONE){
+                if(text==="ok"){
+                    alert("Atualização concluida");
+                    $(".main").load("adminScreen.html");
+                }else{
+                    alert("Erro na alteração");
+                }
             }
-            db.close();
         }
     });
 });
