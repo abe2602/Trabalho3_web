@@ -9,7 +9,7 @@ var productRouter = require('./routes/product');
 var userRouter = require('./routes/user');
 var utilsRouter = require('./routes/utils');
 
-mongoose.connect('mongodb://localhost:27017/petshop');
+mongoose.connect('mongodb://localhost:27017/petshop', {useNewUrlParser: true});
 
 var cors = require('cors')
 var app = express();

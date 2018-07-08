@@ -18,7 +18,7 @@ $(document).ready(function(){
 				xhr.setRequestHeader("Content-Type", "application/json");
 
 				xhr.onreadystatechange = function(){
-					if(this.readyState == XMLHttpRequest.DONE && this.status == 200) {
+					if(this.readyState == XMLHttpRequest.DONE) {
 						var text = xhr.responseText;
 						//var inf = JSON.parse(text);
 
@@ -45,9 +45,10 @@ $(document).ready(function(){
 				data = JSON.stringify({email: email,password: password});
 				console.log(data);
 				xhr.send(data);
-
 			}catch(err){
-				console.log(err.message);
+				alert("Errou");
+				console.log("dey ruim");
+				//console.log(err.message);
 			}
 		}
 	});

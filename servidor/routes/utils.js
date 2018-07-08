@@ -10,21 +10,22 @@ router.post('/login', function(req, res){
      var password = req.body.password;
 	 
       console.log("Login - console node")
-	 console.log(email);
-	 console.log(password);
+      console.log(email);
+      console.log(password);
 	 
      User.findOne({email : email, password : password}, function(erro, user){
-          console.log(user.isAdmin);
           if(erro){
+            console.log("ENTREI AQUI deu pau");
                return res.status(500).send("erro");
-          }
-          if(!user){
+          }else if(!user){
+            console.log("ENTREI AQUI user incorreto");
                return res.status(404).send("erro");
-          }
-          if(user.isAdmin){
+          }else if(user.isAdmin && user.password == password){
                return res.status(200).send("admin");     
-          }else{
+          }else if(user.password == password){
                return res.status(200).send("normal");   
+          }else{
+            return res.status(404).send("erro");
           }
      });
 });
@@ -37,7 +38,6 @@ router.post('/haveService', function(req, res){
           newHaveService.data = req.body.data;
           newHaveService.preco = req.body.preco;
           newHaveService.imagem = req.body.imagem;
-
 
      newHaveService.save(function(erro, save){
           if(erro){
