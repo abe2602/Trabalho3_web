@@ -10,36 +10,41 @@ $(document).ready(function(){
 			imagem = "Imagens/semFoto.jpeg";
 		}
 		var preco = $("#inputPreco").val();
-		var codBarras = $("#inputCodBarras").val();
+		var codBarra = $("#inputCodBarras").val();
 
-		if(name == null|| quantidade == null || preco == null || codBarras == null){
+		if(name == null|| quantidade == null || preco == null || codBarra == null){
 			alert("Preencha todos os campos!");
 		}else{
-			var db = indexedDB.open("db", 1);
+			var xhr = new XMLHttpRequest();
+			xhr.open("POST", "http://localhost:3000/product/addProduct", true);
+			xhr.setRequestHeader("Content-Type", "application/json");
 
-			db.onsuccess = function(event){
-				db = event.target.result;
+			data = JSON.stringify({
+				nome: name,
+				codBarra: codBarra,
+				preco: preco,
+				quantidade: quantidade,
+				vendidos: 0,
+				imagem: imagem,
+				descricao: descricao
+			});
+			console.log(data);
+			xhr.send(data);
 
-				var transaction = db.transaction(["product"], "readwrite");
-
-				var store = transaction.objectStore("product");
-				var product = {
-					nome: name,
-					quantidade: quantidade,
-					imagem: imagem,
-					preco:preco,
-					descricao:descricao,
-					codigoBarra: codBarras
-				};
-
-				var request = store.add(product);
-
-				request.onsuccess = function(w){
-					console.log("cadastrado com sucesso");
-					$(".main").load("adminScreen.html");
+			xhr.onreadystatechange = function(){
+				if(this.readyState == XMLHttpRequest.DONE && this.status == 200) {
+					var text = xhr.responseText;
+					if(text==="ok"){
+						console.log("deu bom");
+						alert("Produto cadastrado com sucesso");
+						$(".main").load("adminScreen.html");
+					}else{
+						console.log("deu ruim");
+						alert("Erro ao cadastrar");
+					}
+					console.log(text);
 				}
-				db.close();
-			}
+			};
 		}
 	});
 });

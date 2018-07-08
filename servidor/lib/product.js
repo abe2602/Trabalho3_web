@@ -5,8 +5,9 @@ var productSchema = new mongoose.Schema({
      codBarra : {type : Number, unique:true},
      preco : {type : Number},
      quantidade : {type : Number},
+     vendidos: {type: Number},
      imagem : {type : String, default: ''},
-     descricao : {type : String},
+     descricao : {type : String}
 })
 
 var Product = mongoose.model('products', productSchema);

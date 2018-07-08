@@ -1,28 +1,39 @@
 $(document).ready(function(){
-    if(loginAux != null){
-        var db = indexedDB.open("db", 1);
+    if(loginAux.length != 0){
 
-        db.onsuccess = function(event){
-            db = event.target.result;
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://localhost:3000/user/getUserData/" + loginAux, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
 
-            var transaction = db.transaction(["usuarios"], "readwrite");
-            var store = transaction.objectStore("usuarios");
+        xhr.onload = function (){
+            var text = xhr.responseText;
+            console.log(JSON.parse(text).length);
+            console.log(text);
 
-                var request = store.get(loginAux);
+            if(text==="erro"){
+                alert("Erro para achar o servico");
+            }else{
+                text = text.split("}");
+                text.pop();
 
-            request.onsuccess = function(e){
-                var result = e.target.result;
+                console.log(text);
+                var list = [];
 
-                $(".nomeUser").val(result.nome);
-                $(".emailUser").val(result.email);
-                $(".telUser").val(parseInt(result.telefone));
-                $(".streetUser").val(result.rua);
-                $(".numCasaUser").val(parseInt(result.numCasa));
-                $(".bairroUser").val(result.bairro);
-                $("#borderFoto1").attr("src", result.foto);
+                for (var i = 0; i < text.length; i++) {
+                    text[i] = text[i].substr(1) + "}";
+                    list.push(JSON.parse(text[i]));
+                }
+
+                $(".nomeUser").val(list[0].nome);
+                $(".emailUser").val(list[0].email);
+                $(".telUser").val(list[0].tel);
+                $(".streetUser").val(list[0].rua);
+                $(".numCasaUser").val(list[0].numCasa);
+                $(".bairroUser").val(list[0].bairro);
+                $(".borderFoto1").attr("src", list[0].foto);
             }
-            db.close();
-        }
+        };
+        xhr.send(null);
     }
 
     $("#addUser").click(function(){
@@ -60,32 +71,42 @@ $(document).ready(function(){
     });
 
     $("#btSave").click(function(){
+        nome = $(".nomeUser").val();
+        tel = $(".telUser").val();
+        rua = $(".streetUser").val();
+        numCasa = $(".numCasaUser").val();
+        bairro = $(".bairroUser").val();
+        foto = $("#borderFoto1").attr("src");
 
-        var name, email, tel, street, numCasa, bairro;
-        var db = indexedDB.open("db", 1);
+        var xhr = new XMLHttpRequest();
+        xhr.open("PUT", "http://localhost:3000/user/updateUser/" + loginAux, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
 
-        db.onsuccess = function (event) {
-            db = event.target.result;
+        data = JSON.stringify({
+            password : " ",
+            foto : foto,
+            nome : nome,
+            email : loginAux,
+            tel : tel,
+            rua: rua,
+            bairro: bairro,
+            numCasa: numCasa,
+            numCartao: " ",
+            bandeiraCartao: " "
+        });
 
-            var transaction = db.transaction(["usuarios"], "readwrite");
-            var store = transaction.objectStore("usuarios");
+        console.log(data);
+        xhr.send(data);
 
-            if(loginAux != null) {
-                var request = store.get(loginAux);
+        xhr.onreadystatechange = function (){
+            var text = xhr.responseText;
 
-                request.onsuccess = function (e) {
-                    var result = e.target.result;
-
-                    result.nome = $(".nomeUser").val();
-                    result.telefone = $(".telUser").val();
-                    result.rua = $(".streetUser").val();
-                    result.numCasa = $(".numCasaUser").val();
-                    result.bairro = $(".bairroUser").val();
-                    result.foto = $("#borderFoto1").attr("src");
-
-                    store.put(result);
+            if(this.readyState == xhr.DONE){
+                if(text==="ok"){
+                    alert("Atualização concluida");
+                }else{
+                    alert("Erro na alteração");
                 }
-                db.close();
             }
         }
     });

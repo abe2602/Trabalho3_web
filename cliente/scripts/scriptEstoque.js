@@ -9,35 +9,52 @@ $(document).ready(function(){
     var arrayDesc = [];
     var i = 0;
 
-    db.onsuccess = function(event) {
-        db = event.target.result;
+    //Faz a requisição HTTP para o node.js
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "http://localhost:3000/product/listProduct/", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
 
-        var objectStore = db.transaction("product").objectStore("product");
+    //Espera a resposta do node.js
+    xhr.onload = function (){
+        var text = xhr.responseText;
+        var sizeArrayProduct = JSON.parse(text).length;
+        console.log(JSON.parse(text).length);
+        console.log(text);
 
-        objectStore.openCursor().onsuccess = event => {
-            let cursor = event.target.result;
-            if (cursor) {
-                arrayCod.push(cursor.value.codigoBarra);
-                arrayImagem.push(cursor.value.imagem);
-                arrayNome.push(cursor.value.nome);
-                arrayPreco.push(cursor.value.preco);
-                arrayQuant.push(cursor.value.quantidade);
-                arrayDesc.push(cursor.value.descricao);
-                cursor.continue();
+        //Trata a resposta
+        if(text==="erro"){
+            alert("Erro para achar o servico");
+        }else{
+            text = text.split("}");
+            text.pop();
+            console.log(text);
+            var list = [];
+
+            for (var k = 0; k < text.length; k++) {
+                text[k] = text[k].substr(1) + "}";
+                list.push(JSON.parse(text[k]));
             }
-            else {
-                $("#caminho").val(arrayImagem[i]);
-                $(".codProduct").val(arrayCod[i]);
-                $(".nameProduct").val(arrayNome[i]);
-                $(".precoProduct").val(arrayPreco[i]);
-                $(".quantidadeProduct").val(arrayQuant[i]);
-                $(".descricaoProduct").val(arrayDesc[i]);
 
-                console.log(arrayNome[i]);
+            //Coloca a resposta nos vetores utilizados
+            for(var j = 0; j < sizeArrayProduct; j++){
+                arrayCod.push(list[j].codBarra);
+                arrayImagem.push(list[j].imagem);
+                arrayNome.push(list[j].nome);
+                arrayPreco.push(list[j].preco);
+                arrayQuant.push(list[j].quantidade);
+                arrayDesc.push(list[j].descricao);
             }
-            db.close();
+            //Coloca o texto nas textBox
+            $("#caminho").val(arrayImagem[i]);
+            $(".codProduct").val(arrayCod[i]);
+            $(".nameProduct").val(arrayNome[i]);
+            $(".precoProduct").val(arrayPreco[i]);
+            $(".quantidadeProduct").val(arrayQuant[i]);
+            $(".descricaoProduct").val(arrayDesc[i]);
         }
-    }
+    };
+
+    xhr.send(null);
 
     $("#nextButtonEstoque").click(function(){
         console.log(i+" "+arrayCod[i].length);
@@ -75,46 +92,53 @@ $(document).ready(function(){
         if(i < 0){
             alert("Não há o que deletar!");
         }else if(arrayCod[i] != undefined){
-            var db = indexedDB.open("db", 1);
+            //Faz a requisição HTTP para o node.js
+            var xhr = new XMLHttpRequest();
+            xhr.open("DELETE", "http://localhost:3000/product/deleteProduct/" + arrayCod[i], true);
+            xhr.setRequestHeader("Content-Type", "application/json");
 
-            db.onsuccess = function(event){
-                db = event.target.result;
-
-                var transaction = db.transaction(["product"], "readwrite");
-                var store = transaction.objectStore("product");
-
-                var request = store.delete(arrayCod[i]);
-
-                request.onsuccess = function (e) {
-                    alert("Exluido com sucesso");
+            xhr.onreadystatechange = function (){
+                if(this.readyState == xhr.DONE){
+                    console.log("Excluido com sucesso");
+                    alert("Excluido com sucesso");
                     $(".main").load("adminScreen.html");
                 }
             };
+            xhr.send(null);
         }
     });
 
     $("#saveButtonEstoque").click(function(){
-        var db = indexedDB.open("db", 1);
+        console.log(arrayCod[i]);
 
-        db.onsuccess = function (event) {
-            db = event.target.result;
+        var xhr = new XMLHttpRequest();
+        xhr.open("PUT", "http://localhost:3000/product/updateProduct/" + arrayCod[i], true);
+        xhr.setRequestHeader("Content-Type", "application/json");
 
-            var store = db.transaction("product", "readwrite").objectStore("product");
-            var request = store.get(arrayCod[i]);
+        var data = JSON.stringify({
+            nome: $(".nameProduct").val(),
+            codBarra: $(".codProduct").val(),
+            preco: $(".precoProduct").val(),
+            quantidade: $(".quantidadeProduct").val(),
+            vendidos: 0,
+            imagem:  $("#caminho").val(),
+            descricao: $(".descricaoProduct").val()
+        });
 
-            request.onsuccess = function (e) {
-                var result = e.target.result;
-                result.imagem = $("#caminho").val();
-                result.codigoBarra = $(".codProduct").val();
-                result.nome =  $(".nameProduct").val();
-                result.preco = $(".precoProduct").val();
-                result.quantidade =  $(".quantidadeProduct").val();
-                result.descricao =  $(".descricaoProduct").val();
+        console.log(data);
+        xhr.send(data);
 
-                store.put(result);
-		alert("Produto Salvo!");
+        xhr.onreadystatechange = function (){
+            var text = xhr.responseText;
+
+            if(this.readyState == xhr.DONE){
+                if(text==="ok"){
+                    alert("Atualização concluida");
+                    $(".main").load("adminScreen.html");
+                }else{
+                    alert("Erro na alteração");
+                }
             }
-            db.close();
         }
     });
 });

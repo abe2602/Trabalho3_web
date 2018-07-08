@@ -33,9 +33,6 @@ $(document).ready(function(){
             xhr.setRequestHeader("Content-Type", "application/json");
 
             xhr.onreadystatechange = function(){
-                console.log(XMLHttpRequest.DONE)
-                console.log(this.readyState)
-
                 if(this.readyState == XMLHttpRequest.DONE && this.status == 200) {
                     var text = xhr.responseText;
                     if(text==="ok"){

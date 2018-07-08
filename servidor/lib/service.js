@@ -4,7 +4,7 @@ var serviceSchema = new mongoose.Schema({
      nome : {type : String, unique: true},
      preco : {type : Number},
      imagem : {type : String, default: ''},
-     descricao : {type : Date},
+     descricao : {type : Date}
 })
 
 var Service = mongoose.model('services', serviceSchema);

@@ -20,17 +20,25 @@ $(document).ready(function(){
 				xhr.onreadystatechange = function(){
 					if(this.readyState == XMLHttpRequest.DONE && this.status == 200) {
 						var text = xhr.responseText;
-						if(text==="erro"){
+						//var inf = JSON.parse(text);
+
+						if(text === "erro"){
 							alert("Usuario e senha inválidas");
 						}else{
-							var inf = JSON.parse(text);
 							loginAux = email;
-
 							$("#loginScreen").text("Conta");
-							$("#loginScreen").click(function(){
+
+							if(text === "admin"){
+								$("#loginScreen").click(function(){
+									$(".main").load("adminScreen.html");
+								});
+								$(".main").load("adminScreen.html");
+							}else{
+								$("#loginScreen").click(function(){
+									$(".main").load("accountScreen.html");
+								});
 								$(".main").load("accountScreen.html");
-							});
-							$(".main").load("accountScreen.html");
+							}
 						}
 					}
 				};

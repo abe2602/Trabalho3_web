@@ -70,9 +70,9 @@ $(document).ready(function(){
 		if(text==="erro"){
 			alert("Erro para achar o servico");
 		}else{
-			text = text.split("}")
+			text = text.split("}");
 			text.pop();
-			console.log(text)
+			console.log(text);
 			var list = [];
 			for (var k = 0; k < text.length; k++) {
 				text[k] = text[k].substr(1) + "}";
@@ -161,7 +161,6 @@ $(document).ready(function(){
 				}
 			}
 		}
-
 	});
 	//voltar
 	$("#previousButtonList").click(function(){

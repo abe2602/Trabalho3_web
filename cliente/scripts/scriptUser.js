@@ -1,13 +1,16 @@
 /*Script que da funcionalidade a tela do usuário*/
 $(document).ready(function(){
+	//Botão de listar animais
 	$("#listAnimal").click(function(){
 		$(".main").load("listAnimalScreen.html");
 	});
-	
+
+	//Botão de adicionar animal
 	$("#addAnimal").click(function(){
 		$(".main").load("addAnimalScreen.html");
-	});	
+	});
 
+	//Botão de sair
 	$("#btOut").click(function(){
 		//AQUIII
 		$(".fa-shopping-cart").remove();
@@ -21,6 +24,7 @@ $(document).ready(function(){
 		});
 	});
 
+	//Botão de atualizar
 	$("#btSave").click(function(){
 		nome = $("#nomeUser").val();
 		tel = $("#telUser").val();
@@ -66,6 +70,7 @@ $(document).ready(function(){
 		}
 	});
 
+	//Carrega os dados
 	if(loginAux.length != 0){
 
 		var xhr = new XMLHttpRequest();
@@ -83,7 +88,7 @@ $(document).ready(function(){
 				text = text.split("}")
 				text.pop();
 				console.log(text)
-				list = []
+				var list = []
 				for (var i = 0; i < text.length; i++) {
 					text[i] = text[i].substr(1) + "}";
 					list.push(JSON.parse(text[i]));

@@ -38,7 +38,6 @@ router.post('/addAnimal', function(req, res){
 
 router.get('/listAnimal/:dono', function(req, res){
   var dono = req.params.dono;
-  var animalList = [];
 
   console.log('Listando animais - console do node');
   Animal.find({dono: dono}, function(erro, animal){
