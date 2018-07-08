@@ -7,6 +7,7 @@ router.get('/listProduct', function(req, res){
   console.log('Estoque - console do node');
   Product.find({}, function(erro, product){
     if(erro){
+      console.log(erro);
       res.status(404).send(erro);
     }else{
       console.log(product);
@@ -64,12 +65,11 @@ router.put('/updateProduct/:codBarra', function(req, res){
           if(erro){
             res.status(404).send(erro);
           }else{
-            res.send("ok");
+            res.status(200).send("ok");
           }
         });
       }
     })
-
 });
 
 router.delete('/deleteProduct/:codBarra', function(req, res){
@@ -85,8 +85,9 @@ router.delete('/deleteProduct/:codBarra', function(req, res){
       res.status(404).send();
     }else{
       console.log("deu bom");
-      res.send("ok");
+      res.status(200).send("ok");
     }
   })
 });
+
 module.exports = router;

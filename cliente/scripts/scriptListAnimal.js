@@ -1,40 +1,45 @@
-function servicosReservados(){
-	var dogsService = [];
-	var serviceService = [];
+function servicosReservados(nameDog){
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", "http://localhost:3000/utils/getAnimalService/" + nameDog, true);
+	xhr.setRequestHeader("Content-Type", "application/json");
+	xhr.send(null);
 
-	db = indexedDB.open("db", 1);
+	//Espera a resposta do node.js
+	xhr.onload = function (){
+		var text = xhr.responseText;
+		var sizeArray = JSON.parse(text).length;
+		console.log("serviço reservado");
 
-	db.onsuccess = function(event){
-		db = event.target.result;
-
-		var objectStore = db.transaction("haveService").objectStore("haveService");
-
-		objectStore.openCursor().onsuccess = event => {
-			let cursor = event.target.result;
-			if (cursor) {
-				alert(cursor.value.service['imagem']);
-				if(cursor.value.animal == $(".nameAnimal").val()){
-
-					/*dogsService.push(cursor.value.animal);
-					serviceService.push(cursor.value.service);*/
-					$("#servicosAnimal").append(
-						'<div class="pg1 row">' +
-					    '<div class="col-sm-12">' +
-					      '<img class="img-fluid float-left" src="' + cursor.value.service['imagem'] + '" alt="imagem" width="200" height="200">' +
-					      '<div class="content-heading">' +
-					        '<h1>' + cursor.value.service['nome'] + '</h1>' +
-					      '</div>' +
-					      '<p> Data marcada:' + cursor.value.service['data'] + '</p>' +
-								'<p> Valor:' + cursor.value.service['preco'] + '</p>' +
-					    '</div>' +
-					  '</div>'
-					)
-					cursor.continue();
-				}
+		//Trata a resposta
+		if(text==="erro"){
+			alert("Erro para achar o servico");
+		}else if(this.readyState == XMLHttpRequest.DONE && this.status == 200) {
+			text = text.split("}");
+			text.pop();
+			console.log(text);
+			var list = [];
+			for (var k = 0; k < text.length; k++) {
+				text[k] = text[k].substr(1) + "}";
+				list.push(JSON.parse(text[k]));
 			}
-			db.close();
-		};
-	}
+
+			//Coloca a resposta nos vetores utilizados
+			for(var j = 0; j < sizeArray; j++){
+				$("#servicosAnimal").append(
+					'<div class="pg1 row">' +
+					'<div class="col-sm-12">' +
+					'<img class="img-fluid float-left" src="' + list[j].imagem + '" alt="imagem" width="200" height="200">' +
+					'<div class="content-heading">' +
+					'<h1>' + list[j].nome + '</h1>' +
+					'</div>' +
+					'<p> Data marcada:' + list[j].data + '</p>' +
+					'<p> Valor:' + list[j].preco + '</p>' +
+					'</div>' +
+					'</div>'
+				)
+			}
+		}
+	};
 }
 
 $(document).ready(function(){
@@ -69,7 +74,7 @@ $(document).ready(function(){
 		//Trata a resposta
 		if(text==="erro"){
 			alert("Erro para achar o servico");
-		}else{
+		}else if(this.readyState == XMLHttpRequest.DONE && this.status == 200) {
 			text = text.split("}");
 			text.pop();
 			console.log(text);
@@ -100,6 +105,8 @@ $(document).ready(function(){
 			$(".racaAnimal").val(dogRaca[i]);
 			$(".racaPai").val(dogRacaPai[i]);
 			$(".racaMae").val(dogRacaMae[i]);
+
+			servicosReservados(dogNome[i]);
 		}
 	};
 
@@ -179,7 +186,7 @@ $(document).ready(function(){
 				$(".racaMae").val(dogRacaMae[i]);
 				$("#borderFoto2").attr("src", dogFoto[i]);
 				document.getElementById("servicosAnimal").innerHTML = "";
-				//servicosReservados();
+				servicosReservados(dogNome[i]);
 			}
 		}
 	});
@@ -200,7 +207,7 @@ $(document).ready(function(){
 				$(".racaMae").val(dogRacaMae[i]);
 				$("#borderFoto2").attr("src", dogFoto[i]);
 				document.getElementById("servicosAnimal").innerHTML = "";
-				//servicosReservados();
+				servicosReservados(dogNome[i]);
 			}
 		}
 	});

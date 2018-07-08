@@ -33,7 +33,7 @@ router.get('/listService', function(req, res){
       res.status(404).send(erro);
     }else{
       console.log(service);
-      res.send(service);
+      res.status(200).send(service);
     }
   })
 });
@@ -55,7 +55,7 @@ router.put('/updateService/:nomeService', function(req, res){
           if(erro){
             res.status(404).send(erro);
           }else{
-            res.send("ok");
+            res.status(200).send("ok");
           }
         });
       }

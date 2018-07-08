@@ -42,10 +42,11 @@ router.get('/listAnimal/:dono', function(req, res){
   console.log('Listando animais - console do node');
   Animal.find({dono: dono}, function(erro, animal){
     if(erro){
+      console.log(erro);
       res.status(404).send(erro);
     }else{
       console.log(animal);
-      res.send(animal);
+      res.status(200).send(animal);
     }
   })
 });
@@ -63,7 +64,7 @@ router.delete('/deleteAnimal/:id', function(req, res){
       res.status(404).send();
     }else{
       console.log("deu bom");
-      res.send("ok");
+      res.status(200).send("ok");
     }
   })
 });
@@ -91,7 +92,7 @@ router.put('/updateAnimal/:id', function(req, res){
           if(erro){
             res.status(404).send(erro);
           }else{
-            res.send("ok");
+            res.status(200).send("ok");
           }
         });
       }

@@ -52,7 +52,7 @@ router.get('/getUserData/:email', function(req, res){
                console.log("Usuario nao identificado");
           }else{
                console.log(foundUser);
-               return res.send(foundUser)
+               return res.status(200).send(foundUser)
           }
      })
 });
@@ -77,7 +77,7 @@ router.put('/updateUser/:email', function(req, res){
                     if(erro){
                       res.status(404).send(erro);
                     }else{
-                      res.send("ok");
+                      res.status(200).send("ok");
                     }
                });
           }

@@ -24,7 +24,7 @@ $(document).ready(function(){
 
 						if(text === "erro"){
 							alert("Usuario e senha inválidas");
-						}else{
+						}else if(this.readyState == XMLHttpRequest.DONE && this.status == 200) {
 							loginAux = email;
 							$("#loginScreen").text("Conta");
 

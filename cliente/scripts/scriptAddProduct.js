@@ -34,7 +34,7 @@ $(document).ready(function(){
 			xhr.onreadystatechange = function(){
 				if(this.readyState == XMLHttpRequest.DONE && this.status == 200) {
 					var text = xhr.responseText;
-					if(text==="ok"){
+					if(this.readyState == XMLHttpRequest.DONE && this.status == 200 && text==="ok"){
 						console.log("deu bom");
 						alert("Produto cadastrado com sucesso");
 						$(".main").load("adminScreen.html");

@@ -19,7 +19,7 @@ $(document).ready(function(){
                 xhr.onreadystatechange = function(){
                     if(this.readyState == XMLHttpRequest.DONE && this.status == 200) {
                         var text = xhr.responseText;
-                        if(text==="ok"){
+                        if(this.readyState == XMLHttpRequest.DONE && this.status == 200 && text==="ok"){
                             console.log("Animal Adicionado com sucesso");
                             alert("Cadastro efetuado com sucesso");
                             $(".main").load("accountScreen.html");

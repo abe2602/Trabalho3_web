@@ -12,7 +12,7 @@ $(document).ready(function(){
 
             if(text==="erro"){
                 alert("Erro para achar o servico");
-            }else{
+            }else if(this.readyState == XMLHttpRequest.DONE && this.status == 200){
                 text = text.split("}");
                 text.pop();
 
@@ -102,7 +102,7 @@ $(document).ready(function(){
             var text = xhr.responseText;
 
             if(this.readyState == xhr.DONE){
-                if(text==="ok"){
+                if(text==="ok" && this.readyState == XMLHttpRequest.DONE && this.status == 200){
                     alert("Atualização concluida");
                 }else{
                     alert("Erro na alteração");
