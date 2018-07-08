@@ -5,80 +5,97 @@ $(document).ready(function(){
     let serviceData = [];
     let dogNome = [];
     let serviceKey = [];
-
     var i = 0;
 
-    db.onsuccess = function(event){
-        db = event.target.result;
+    //Faz a requisição HTTP para o node.js
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "http://localhost:3000/utils/listHaveService/", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(null);
 
-        var objectStore = db.transaction("haveService").objectStore("haveService");
+    //Espera a resposta do node.js
+    xhr.onload = function (){
+        var text = xhr.responseText;
+        var sizeArrayProduct = JSON.parse(text).length;
+        console.log(JSON.parse(text).length);
+        console.log(text);
 
-        objectStore.openCursor().onsuccess = event => {
-            let cursor = event.target.result;
-            if (cursor) {
-                    dogNome.push(cursor.value.animal);
-                    serviceNome.push(cursor.value.service.nome);
-                    servicePreco.push(cursor.value.service.preco);
-                    serviceData.push(cursor.value.service.data)
-                    serviceKey.push(cursor.key);
-                    cursor.continue();
+        //Trata a resposta
+        if(text==="erro"){
+            alert("Erro para achar o servico");
+        }else{
+            text = text.split("}");
+            text.pop();
+            console.log(text);
+            var list = [];
+
+            for (var k = 0; k < text.length; k++) {
+                text[k] = text[k].substr(1) + "}";
+                list.push(JSON.parse(text[k]));
             }
-            else {
-                $("#nomeServicoAnimal").val(dogNome[i]);
-                $("#nomeServico").val(serviceNome[i]);
-                $("#dataServico").val(serviceData[i]);
-                $("#precoServico").val(servicePreco[i]);
+
+            //Coloca a resposta nos vetores utilizados
+            for(var j = 0; j < sizeArrayProduct; j++){
+                dogNome.push(list[j].animal);
+                serviceNome.push(list[j].nome);
+                servicePreco.push(list[j].preco);
+                serviceData.push(list[j].data);
+                serviceKey.push(list[j]._id);
             }
-            db.close();
-        };
-    }
+            //Coloca o texto nas textBox
+            $("#nomeServicoAnimal").val(dogNome[i]);
+            $("#nomeServico").val(serviceNome[i]);
+            $("#dataServico").val(serviceData[i]);
+            $("#precoServico").val(servicePreco[i]);
+        }
+    };
 
     $("#deleteServico").click(function(){
         if(i < 0){
             alert("Não há o que deletar!");
         }else if(serviceKey[i] != undefined){
-            var db = indexedDB.open("db", 1);
+            //Faz a requisição HTTP para o node.js
+            var xhr = new XMLHttpRequest();
+            xhr.open("DELETE", "http://localhost:3000/utils/deleteHaveService/" + serviceKey[i], true);
+            xhr.setRequestHeader("Content-Type", "application/json");
 
-            db.onsuccess = function(event){
-                db = event.target.result;
-
-                var transaction = db.transaction(["haveService"], "readwrite");
-                var store = transaction.objectStore("haveService");
-
-                var request = store.delete(serviceKey[i]);
-
-                request.onsuccess = function (e) {
-                    alert("Exluido com sucesso");
+            xhr.onreadystatechange = function (){
+                if(this.readyState == xhr.DONE){
+                    console.log("Excluido com sucesso");
+                    alert("Excluido com sucesso");
                     $(".main").load("adminScreen.html");
                 }
             };
+            xhr.send(null);
         }
     });
 
     $("#atualizarServico").click(function(){
-        var db = indexedDB.open("db", 1);
+        var xhr = new XMLHttpRequest();
+        xhr.open("PUT", "http://localhost:3000/utils/updateHaveService/" + serviceKey[i], true);
+        xhr.setRequestHeader("Content-Type", "application/json");
 
-        db.onsuccess = function (event) {
-            db = event.target.result;
+        var data = JSON.stringify({
+            nome: $("#nomeServico").val(),
+            animal: $("#nomeServicoAnimal").val(),
+            preco:  $("#precoServico").val(),
+            data: $("#dataServico").val()
+        });
 
-            var transaction = db.transaction(["haveService"], "readwrite");
-            var store = transaction.objectStore("haveService");
+        console.log(data);
+        xhr.send(data);
 
-            var request = store.get(serviceKey[i]);
+        xhr.onreadystatechange = function (){
+            var text = xhr.responseText;
 
-            request.onsuccess = function (e) {
-                var result = e.target.result;
-
-                result.animal = $("#nomeServicoAnimal").val();
-                result.service.nome = $("#nomeServico").val();
-                result.service.data = $("#dataServico").val();
-                result.preco = $("#precoServico").val();
-
-                store.put(result, serviceKey[i]);
-                $(".main").load("adminScreen.html");
+            if(this.readyState == xhr.DONE){
+                if(text==="ok"){
+                    alert("Atualização concluida");
+                    $(".main").load("adminScreen.html");
+                }else{
+                    alert("Erro na alteração");
+                }
             }
-
-            db.close();
         }
     });
 

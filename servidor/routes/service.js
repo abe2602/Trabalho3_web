@@ -42,7 +42,7 @@ router.put('/updateService/:nomeService', function(req, res){
 	var nomeService = req.params.nomeService;
 
 	console.log('Atualizando produtos - console do node');
-  	console.log(nomeService);
+  console.log(nomeService);
 
     Service.findOne({nome: nomeService}, function(erro, service){
       if(erro){
@@ -60,6 +60,23 @@ router.put('/updateService/:nomeService', function(req, res){
         });
       }
     })
+});
+
+router.delete('/deleteHaveService/:id', function(req, res){
+  var id = req.params.id;
+
+  console.log('Excluindo servico - console do node');
+
+  haveService.findOneAndRemove({_id: id}, function(erro, servico){
+    if(erro){
+      console.log("deu ruim ;-;");
+      console.log(erro)
+      res.status(404).send();
+    }else{
+      console.log("deu bom");
+      res.status(200).send("ok");
+    }
+  })
 });
 
 module.exports = router;

@@ -104,4 +104,55 @@ router.put('/buyStuff/:idProduto', function(req, res){
      })
 });
 
+router.get('/listHaveService', function(req, res){
+
+  console.log('Servicos marcados - console do node');
+  haveService.find({}, function(erro, service){
+    if(erro){
+      res.status(404).send(erro);
+    }else{
+      console.log(service);
+      res.status(200).send(service);
+    }
+  })
+});
+
+router.delete('/deleteHaveService', function(req, res){
+
+  console.log('Servicos marcados - console do node');
+  haveService.find({}, function(erro, service){
+    if(erro){
+      res.status(404).send(erro);
+    }else{
+      console.log(service);
+      res.status(200).send(service);
+    }
+  })
+});
+
+router.put('/updateHaveService/:id', function(req, res){
+  var id = req.params.id;
+
+  console.log('Atualizando produtos - console do node');
+
+    haveService.findOne({_id: id}, function(erro, service){
+      if(erro){
+        res.status(404).send(erro);
+      }else{
+        service.animal = req.body.animal;
+        service.preco = req.body.preco;
+        service.data = req.body.data;
+        service.nome = req.body.nome;
+
+        service.save(function(erro, newService){
+          if(erro){
+            res.status(404).send(erro);
+          }else{
+            res.status(200).send("ok");
+          }
+        });
+      }
+    })
+});
+
 module.exports = router;

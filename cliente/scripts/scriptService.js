@@ -10,6 +10,7 @@ $(document).ready(function(){
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "http://localhost:3000/service/listService/", true);
     xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(null);
 
     //Espera a resposta do node.js
     xhr.onload = function (){
@@ -45,8 +46,6 @@ $(document).ready(function(){
         }
     };
 
-    xhr.send(null);
-
     $("#nextButtonService").click(function(){
         console.log(i+" "+arrayNome[i].length);
 
@@ -77,21 +76,19 @@ $(document).ready(function(){
         if(i < 0){
             alert("Não há o que deletar!");
         }else if(arrayNome[i] != undefined){
-            var db = indexedDB.open("db", 1);
+            //Faz a requisição HTTP para o node.js
+            var xhr = new XMLHttpRequest();
+            xhr.open("DELETE", "http://localhost:3000/service/deleteService/" + arrayNome[i], true);
+            xhr.setRequestHeader("Content-Type", "application/json");
 
-            db.onsuccess = function(event){
-                db = event.target.result;
-
-                var transaction = db.transaction(["service"], "readwrite");
-                var store = transaction.objectStore("service");
-
-                var request = store.delete(arrayNome[i]);
-
-                request.onsuccess = function (e) {
-                    alert("Exluido com sucesso");
+            xhr.onreadystatechange = function (){
+                if(this.readyState == xhr.DONE){
+                    console.log("Excluido com sucesso");
+                    alert("Excluido com sucesso");
                     $(".main").load("adminScreen.html");
                 }
             };
+            xhr.send(null);
         }
     });
 
