@@ -1,4 +1,0 @@
-- ligar o mongoDB (ligar o mongo na pasta data)
-	Caso a pasta data não existe, criar no mesmo diretório do servidor e cliente
-- ligar o node.js (npm start)
-- ligar a aplicação do cliente

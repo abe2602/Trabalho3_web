@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../lib/user');
+var Animal = require('../lib/animal');
 var Service = require('../lib/service');
 var Product = require('../lib/product');
 var haveService = require('../lib/haveService');
@@ -154,5 +155,161 @@ router.put('/updateHaveService/:id', function(req, res){
       }
     })
 });
+
+
+router.post('/defaultData', function(req, res){
+     var password = 123;
+     var foto = 'Imagens\\perfilAdmin.jpg'
+     var nome = 'admin'
+     var email = 'admin@admin.com'
+     var tel = 1
+     var rua = ' '
+     var bairro = ' '
+     var numCasa = 1
+     var bairro = ' '
+     var numCartao  = 0
+     var bandeiraCartao = ' '
+     var isAdmin = true
+     var idAdmin = 0
+
+     var cadastrarUser = new User();
+          cadastrarUser.password = password;
+          cadastrarUser.foto = foto;
+          cadastrarUser.nome = nome;
+          cadastrarUser.email = email;
+          cadastrarUser.tel = tel;
+          cadastrarUser.rua = rua;
+          cadastrarUser.bairro = bairro;
+          cadastrarUser.numCasa = numCasa;
+          cadastrarUser.numCartao = numCartao;
+          cadastrarUser.bandeiraCartao = bandeiraCartao;
+          cadastrarUser.isAdmin = isAdmin;
+          cadastrarUser.idAdmin = idAdmin;
+
+     cadastrarUser.save(function(erro, save){
+          if(erro){
+               console.log(erro);
+          }
+          console.log("Usuário cadastrado com sucesso");
+          console.log(cadastrarUser);
+     });
+
+     password = 123;
+     foto = 'Imagens\\perfilFoto.jpg'
+     nome = 'Bruno'
+     email = 'messengerabe@hotmail.com'
+     tel = 2
+     rua = 'Que sobe e desce'
+     bairro = 'Mas nunca aparece'
+     numCasa = 2
+     bairro = ' '
+     numCartao  = 2
+     bandeiraCartao = 'Visa'
+     isAdmin = false
+     idAdmin = 0
+
+     var cadastrarUserAdmin = new User();
+          cadastrarUserAdmin.password = password;
+          cadastrarUserAdmin.foto = foto;
+          cadastrarUserAdmin.nome = nome;
+          cadastrarUserAdmin.email = email;
+          cadastrarUserAdmin.tel = tel;
+          cadastrarUserAdmin.rua = rua;
+          cadastrarUserAdmin.bairro = bairro;
+          cadastrarUserAdmin.numCasa = numCasa;
+          cadastrarUserAdmin.numCartao = numCartao;
+          cadastrarUserAdmin.bandeiraCartao = bandeiraCartao;
+          cadastrarUserAdmin.isAdmin = isAdmin;
+          cadastrarUserAdmin.idAdmin = idAdmin;
+
+     cadastrarUserAdmin.save(function(erro, save){
+          if(erro){
+               console.log(erro);
+          }
+          console.log("Usuário cadastrado com sucesso");
+          console.log(cadastrarUserAdmin);
+     });
+
+    var dono = 'messengerabe@hotmail.com';
+    var idade = 4
+    var peso = 4
+    var raca = 'Salsicha'
+    var racaPai = 'Salsicha'
+    var racaMae = 'Salsicha'
+    nome = 'Nina'
+    foto = 'Imagens\\nina.jpg'
+
+  var cadastrarAnimal = new Animal();
+    cadastrarAnimal.dono = dono;
+    cadastrarAnimal.nome = nome;
+    cadastrarAnimal.idade = idade;
+    cadastrarAnimal.peso = peso;
+    cadastrarAnimal.raca = raca;
+    cadastrarAnimal.racaPai = racaPai;
+    cadastrarAnimal.racaMae = racaMae;
+    cadastrarAnimal.foto = foto;
+
+    console.log(cadastrarAnimal);
+     cadastrarAnimal.save(function(erro, save){
+          if(erro){
+               console.log(erro);
+               console.log("Algo de errado aconteceu")
+          }else{
+            console.log("Animal cadastrado com sucesso");
+            console.log(cadastrarAnimal);
+          }
+     });
+
+  nome = 'Ração Golden';
+  imagem = 'Imagens\\goldenRacao.jpg'
+  var preco = 90;
+  var codBarra = 69;
+  var quantidade = 35;
+  var vendidos = 0;
+  var descricao = 'Ração para cachorros.jpg';
+
+  var cadastrarProductDog = new Product();
+    cadastrarProductDog.nome = nome; 
+    cadastrarProductDog.codBarra = codBarra;
+    cadastrarProductDog.preco = preco;
+    cadastrarProductDog.quantidade = quantidade;
+    cadastrarProductDog.vendidos = vendidos;
+    cadastrarProductDog.imagem = imagem;
+    cadastrarProductDog.descricao = descricao;
+     
+     cadastrarProductDog.save(function(erro, save){
+          if(erro){
+               console.log(erro);
+          }
+          console.log("Produto cadastrado com sucesso");
+          console.log(cadastrarProductDog);
+     });
+
+  nome = 'Ração Gran Plus';
+  preco = 50;
+  imagem = 'Imagens\\gatoRacao2.jpg'
+  codBarra = 15;
+  quantidade = 17;
+  vendidos = 0;
+  descricao = 'Ração para gatos';
+
+  var cadastrarProduct = new Product();
+    cadastrarProduct.nome = nome; 
+    cadastrarProduct.codBarra = codBarra;
+    cadastrarProduct.preco = preco;
+    cadastrarProduct.quantidade = quantidade;
+    cadastrarProduct.vendidos = vendidos;
+    cadastrarProduct.imagem = imagem;
+    cadastrarProduct.descricao = descricao;
+     
+     cadastrarProduct.save(function(erro, save){
+          if(erro){
+               console.log(erro);
+          }
+          console.log("Produto cadastrado com sucesso");
+          console.log(cadastrarProduct);
+     });
+});
+
 
 module.exports = router;

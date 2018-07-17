@@ -162,6 +162,24 @@ $(document).ready(function(){
 		}
 	};
 
+	$('#services').on('change', '#serviceName', function(){
+		var texto1 = '<img class="card-img-top img-fluid" src="'
+		var texto2 = 'Imagens/semFoto.jpeg'
+		var texto3 = '" width="300" height="300" alt="serviço">'
+		console.log(this.value);
+		if(this.value == -1)
+		{
+			$('#serviceImg').html(texto1+texto2+texto3);
+			$('#servicePreco').html('R$----');
+		}
+		else
+		{
+			$('#serviceImg').html (texto1+arrayImageService[this.value]+texto3);
+			$('#servicePreco').html('R$'+arrayPrecoService[this.value]);
+		}
+		console.log("foi");
+	});
+
 	//NÃO APAGAR ESSA LINHA, É IMPORTANTE
 	db = indexedDB.open("db", 1);
 	db.onsuccess = function(event) {
@@ -198,69 +216,57 @@ $(document).ready(function(){
 					arrayNameService.push(list[j].nome);
 					arrayPrecoService.push(list[j].preco);
 				}
+					console.log("AAAAAAAAAAAAAAAAAAAAAA");
+					console.log(dogNome);
+					console.log(arrayNameService);
+					console.log("AAAAAAAAAAAAAAAAAAAAAA");
 
 				//PAREI AQUI, VAMOS VER
+				var TextoA = '<option value= "-1">Serviços...</option>';
 				for(i = 0; i < arrayPrecoService.length; i++) {
-					$("#services").append(
-						'<div class="col-lg-4 col-md-6 mb-4">' +
-						'<div class="card h-100">' +
-						'<img class="card-img-top img-fluid" src="'+ arrayImageService[i] +'" width="300" height="300" alt="serviço">' +
-						'<div class="card-body">' +
-						'<h4 class="card-title">' +
-						'<p>'+ arrayNameService[i] +'</p>' +
-						'</h4>' +
-						'<h5>R$'+ arrayPrecoService[i] +'</h5>' +
-						'<p class="card-text"> Nome do animal(apenas para usuarios): </p>' +
-						'<select id = "dog'+i+'"></select>' +
-						'</div>' +
-						'<div class="card-footer text-center">' +
-						'<p> Data: <input type = "date" id = "service'+i+'"></p>' +
-						'<p> Horário: <select id = "time'+i+'">' +
-							'<option value= "8:00">8 : 00</option>' +
-							'<option value= "9:00">9 : 00</option>' +
-							'<option value="10:00">10 : 00</option>' +
-							'<option value="11:00">11 : 00</option>' +
-							'<option value="13:00">13 : 00</option>' +
-							'<option value="14:00">14 : 00</option>' +
-							'<option value="15:00">15 : 00</option>' +
-							'<option value="16:00">16 : 00</option>' +
-							'<option value="17:00">17 : 00</option>' +
-							'<option value="18:00">18 : 00</option>' +
-							'</select></p>' +
-						'</div>' +
-						'</div>' +
-						'</div>'
-					)
+					TextoA = TextoA + '<option value= "'+i+'">'+arrayNameService[i]+'</option>'
+				}
+				var TextoB = '<option value= "-1">Seus Pet...</option>';
+				for(i = 0; i < dogNome.length; i++) {
+					TextoB = TextoB + '<option value= "'+i+'">'+dogNome[i]+'</option>'
 				}
 
-				//Bugs aqui!!
-				for(i = 0; i < arrayPrecoService.length; i++) {
-					var select = document.getElementById('dog'+i);
-					console.log(select.options.length);
-
-					for(index in dogNome) {
-						select.options[select.options.length] = new Option(dogNome[index], index);
-					}
-				}
-				$("#service").change(function(){
-					document.getElementById("time").innerHTML = '';
-					var myDate = new Date($('#service').val());
-					var n = myDate.getDay() + 1;
-					if( n != 7){
-						document.getElementById("marcarService").disabled = false;
-						$("#marcarService").attr('disabled',false);
-						$("#marcarService").attr('style',  'background-color:rgb(56, 137, 76)');
-						$("#marcarService").css( 'cursor', 'pointer' );
-
-					}
-					else{
-						document.getElementById("marcarService").disabled = true;
-						$("#marcarService").attr('disabled',true);
-						$("#marcarService").attr('style',  'background-color:rgb(100, 100, 100)');
-						$("#marcarService").css( 'cursor', 'default' );
-						alert("Não atendemos de domingo ");
-					}
-				});
+				$("#services").append(
+					'<div class="col-lg-4 col-md-6 mb-4">' +
+					'<div class="card h-100">' +
+					'<div id="serviceImg">' +
+						'<img class="card-img-top img-fluid" src="Imagens/semFoto.jpeg" width="300" height="300" alt="serviço">' +
+					'</div>' +
+					'<div class="card-body"></div>' +
+					'</div></div>' +
+					'<div class="col-lg-4 col-md-6 mb-4">' +
+					'<div class="card h-100">' +
+					'<div class="card-body">' +
+					'<h4 class="card-title">' +
+					'</h4>' +
+					'<h5 class="card-text"> Escolha o serviço: </h5>' +
+					'<p><select id = "serviceName">'+TextoA+'</select></p>' +
+					'<h5 class="card-text"> Nome do animal: </h5>' +
+					'<p><select id = "dogName">'+TextoB+'</select></p>' +
+					'<h5 class="card-text"> Data/horário:</h5><p>(não trabalhamos de domingo)</p>' +
+					'<input type = "date" id = "serviceDay">' +
+					'<p><select id = "serviceTime">' +
+						'<option value="08:00:00">8 : 00</option>' +
+						'<option value="09:00:00">9 : 00</option>' +
+						'<option value="10:00:00">10 : 00</option>' +
+						'<option value="11:00:00">11 : 00</option>' +
+						'<option value="13:00:00">13 : 00</option>' +
+						'<option value="14:00:00">14 : 00</option>' +
+						'<option value="15:00:00">15 : 00</option>' +
+						'<option value="16:00:00">16 : 00</option>' +
+						'<option value="17:00:00">17 : 00</option>' +
+						'<option value="18:00:00">18 : 00</option>' +
+						'</select></p>' +
+					'<h5 id="servicePreco">R$----</h5>' +
+					'</div>' +
+					'</div>' +
+					'</div>'
+				)
 			}
 		};
 
@@ -289,23 +295,25 @@ $(document).ready(function(){
 		if(loginAux == null)
 			alert("LOGUE-SE PARA MARCAR");
 		else {
-			var aux = 1, aux2 = arrayPrecoService.length;
-			for (var j = 0; j < arrayPrecoService.length; j++) {
-				if(($("#dog" + j).val().length == 0) && ($("#service" + j).val().length == 0))
-					aux2 = aux2 - 1;
-				else if(($("#dog" + j).val().length == 0) || ($("#service" + j).val().length == 0))
-					aux = aux * 0;
-			}
-			if(aux == 0 || aux2 == 0){
-				if (aux2 == 0) alert("Nenhum serviço escolhido.");
-				else if (aux == 0) alert("Preencha todos os campos dos serviços escolhidos!");
+			if(($("#serviceName").val() == -1)||($("#dogName").val() == -1)||($("#serviceDay").val().length == 0)){
+				alert("Preencha todos os campos");
 			}
 			else {
-				for (var j = 0; j < arrayPrecoService.length; j++) {
-					console.log(arrayNameService[j] + " " + $("#service" + j).val() + $("#dog" + j).val());
-
-					marcarService($("#dog" + j).val(), $("#service" + j).val() + " " + $("#time" + j).val(), arrayNameService[j], arrayPrecoService[j], arrayImageService[j]);
+				var dayTest = new Date($("#serviceDay").val()+'T'+$("#serviceTime").val()+'Z');
+				if(dayTest.getDay()==0)
+				{
+					alert("Não trabalhamos de domingo");
+					return;
 				}
+				marcarService(
+					dogNome[$("#dogName").val()],
+					new Date($("#serviceDay").val()+'T'+$("#serviceTime").val()+'Z'),
+					arrayNameService[$("#serviceName").val()],
+					arrayPrecoService[$("#serviceName").val()],
+					arrayImageService[$("#serviceName").val()]);
+
+				alert("Serviço marcado com sucesso!");
+				$(".main").load("accountScreen.html");
 			}
 		}
 	});
@@ -315,7 +323,7 @@ $(document).ready(function(){
 	{
 		if(nomeAnimal.length != 0){
 			var haveService = JSON.stringify({
-				animal:'Nina',
+				animal:nomeAnimal,
 				nome:nome,
 				preco:preco,
 				imagem:imagem,

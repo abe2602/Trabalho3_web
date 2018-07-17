@@ -1,4 +1,13 @@
 $(document).ready(function(){
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:3000/utils/defaultData", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(null);
+
+    xhr.onreadystatechange = function(){
+    };
+
 	$(".main").load("initialScreen.html");
 
 	/*Funções de direcionamento do menu, por enquanto, só há a mudança da tag <main> para a respectiva
@@ -55,3 +64,5 @@ function initMap(){
         title: 'Marker'
     });
 }
+
+
